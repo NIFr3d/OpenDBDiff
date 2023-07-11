@@ -2,6 +2,9 @@ using OpenDBDiff.Abstractions.Schema;
 using OpenDBDiff.Abstractions.Schema.Model;
 using OpenDBDiff.SqlServer.Schema.Options;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace OpenDBDiff.SqlServer.Ui
@@ -35,81 +38,117 @@ namespace OpenDBDiff.SqlServer.Ui
         public override void Load(IOption option)
         {
             this.SQLOption = new SqlOption(option);
-            txtBlob.Text = SQLOption.Defaults.DefaultBlobValue;
-            txtDate.Text = SQLOption.Defaults.DefaultDateValue;
-            txtDefaultInteger.Text = SQLOption.Defaults.DefaultIntegerValue;
-            txtDefaultReal.Text = SQLOption.Defaults.DefaultRealValue;
-            txtNText.Text = SQLOption.Defaults.DefaultNTextValue;
-            txtText.Text = SQLOption.Defaults.DefaultTextValue;
-            txtVariant.Text = SQLOption.Defaults.DefaultVariantValue;
-            txtTime.Text = SQLOption.Defaults.DefaultTime;
-            txtXML.Text = SQLOption.Defaults.DefaultXml;
 
-            chkCompAssemblys.Checked = SQLOption.Ignore.FilterAssemblies;
-            chkCompCLRFunctions.Checked = SQLOption.Ignore.FilterCLRFunction;
-            chkCompCLRStore.Checked = SQLOption.Ignore.FilterCLRStoredProcedure;
-            chkCompCLRTrigger.Checked = SQLOption.Ignore.FilterCLRTrigger;
-            chkCompCLRUDT.Checked = SQLOption.Ignore.FilterCLRUDT;
+            var userLocalAppDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), nameof(OpenDBDiff));
+            if (!File.Exists(Path.Combine(userLocalAppDataDirectory, "searchoptions.xml")))
+            {
+                txtBlob.Text = SQLOption.Defaults.DefaultBlobValue;
+                txtDate.Text = SQLOption.Defaults.DefaultDateValue;
+                txtDefaultInteger.Text = SQLOption.Defaults.DefaultIntegerValue;
+                txtDefaultReal.Text = SQLOption.Defaults.DefaultRealValue;
+                txtNText.Text = SQLOption.Defaults.DefaultNTextValue;
+                txtText.Text = SQLOption.Defaults.DefaultTextValue;
+                txtVariant.Text = SQLOption.Defaults.DefaultVariantValue;
+                txtTime.Text = SQLOption.Defaults.DefaultTime;
+                txtXML.Text = SQLOption.Defaults.DefaultXml;
 
-            chkConstraints.Checked = SQLOption.Ignore.FilterConstraint;
-            chkConstraintsPK.Checked = SQLOption.Ignore.FilterConstraintPK;
-            chkConstraintsFK.Checked = SQLOption.Ignore.FilterConstraintFK;
-            chkConstraintsUK.Checked = SQLOption.Ignore.FilterConstraintUK;
-            chkConstraintsCheck.Checked = SQLOption.Ignore.FilterConstraintCheck;
+                chkCompAssemblys.Checked = SQLOption.Ignore.FilterAssemblies;
+                chkCompCLRFunctions.Checked = SQLOption.Ignore.FilterCLRFunction;
+                chkCompCLRStore.Checked = SQLOption.Ignore.FilterCLRStoredProcedure;
+                chkCompCLRTrigger.Checked = SQLOption.Ignore.FilterCLRTrigger;
+                chkCompCLRUDT.Checked = SQLOption.Ignore.FilterCLRUDT;
 
-            chkCompExtendedProperties.Checked = SQLOption.Ignore.FilterExtendedProperties;
-            chkCompFunciones.Checked = SQLOption.Ignore.FilterFunction;
-            chkIndex.Checked = SQLOption.Ignore.FilterIndex;
-            chkIndexFillFactor.Checked = SQLOption.Ignore.FilterIndexFillFactor;
-            chkIndexIncludeColumns.Checked = SQLOption.Ignore.FilterIndexIncludeColumns;
-            chkIndexFilter.Checked = SQLOption.Ignore.FilterIndexFilter;
-            chkFullText.Checked = SQLOption.Ignore.FilterFullText;
-            chkFullTextPath.Checked = SQLOption.Ignore.FilterFullTextPath;
+                chkConstraints.Checked = SQLOption.Ignore.FilterConstraint;
+                chkConstraintsPK.Checked = SQLOption.Ignore.FilterConstraintPK;
+                chkConstraintsFK.Checked = SQLOption.Ignore.FilterConstraintFK;
+                chkConstraintsUK.Checked = SQLOption.Ignore.FilterConstraintUK;
+                chkConstraintsCheck.Checked = SQLOption.Ignore.FilterConstraintCheck;
 
-            chkCompSchemas.Checked = SQLOption.Ignore.FilterSchema;
-            chkCompStoredProcedure.Checked = SQLOption.Ignore.FilterStoredProcedure;
-            chkTableOption.Checked = SQLOption.Ignore.FilterTableOption;
-            chkTables.Checked = SQLOption.Ignore.FilterTable;
-            chkTablesColumnIdentity.Checked = SQLOption.Ignore.FilterColumnIdentity;
-            chkTablesColumnCollation.Checked = SQLOption.Ignore.FilterColumnCollation;
-            chkTableLockEscalation.Checked = SQLOption.Ignore.FilterTableLockEscalation;
-            chkTableChangeTracking.Checked = SQLOption.Ignore.FilterTableChangeTracking;
+                chkCompExtendedProperties.Checked = SQLOption.Ignore.FilterExtendedProperties;
+                chkCompFunciones.Checked = SQLOption.Ignore.FilterFunction;
+                chkIndex.Checked = SQLOption.Ignore.FilterIndex;
+                chkIndexFillFactor.Checked = SQLOption.Ignore.FilterIndexFillFactor;
+                chkIndexIncludeColumns.Checked = SQLOption.Ignore.FilterIndexIncludeColumns;
+                chkIndexFilter.Checked = SQLOption.Ignore.FilterIndexFilter;
+                chkFullText.Checked = SQLOption.Ignore.FilterFullText;
+                chkFullTextPath.Checked = SQLOption.Ignore.FilterFullTextPath;
 
-            chkTablesColumnOrder.Checked = SQLOption.Ignore.FilterColumnOrder;
-            chkIgnoreNotForReplication.Checked = SQLOption.Ignore.FilterNotForReplication;
+                chkCompSchemas.Checked = SQLOption.Ignore.FilterSchema;
+                chkCompStoredProcedure.Checked = SQLOption.Ignore.FilterStoredProcedure;
+                chkTableOption.Checked = SQLOption.Ignore.FilterTableOption;
+                chkTables.Checked = SQLOption.Ignore.FilterTable;
+                chkTablesColumnIdentity.Checked = SQLOption.Ignore.FilterColumnIdentity;
+                chkTablesColumnCollation.Checked = SQLOption.Ignore.FilterColumnCollation;
+                chkTableLockEscalation.Checked = SQLOption.Ignore.FilterTableLockEscalation;
+                chkTableChangeTracking.Checked = SQLOption.Ignore.FilterTableChangeTracking;
 
-            chkCompTriggersDDL.Checked = SQLOption.Ignore.FilterDDLTriggers;
-            chkCompTriggers.Checked = SQLOption.Ignore.FilterTrigger;
-            chkCompUDT.Checked = SQLOption.Ignore.FilterUserDataType;
-            chkCompVistas.Checked = SQLOption.Ignore.FilterView;
-            chkCompXMLSchemas.Checked = SQLOption.Ignore.FilterXMLSchema;
-            chkFileGroups.Checked = SQLOption.Ignore.FilterTableFileGroup;
-            chkCompUsers.Checked = SQLOption.Ignore.FilterUsers;
-            chkCompRoles.Checked = SQLOption.Ignore.FilterRoles;
-            chkCompRules.Checked = SQLOption.Ignore.FilterRules;
+                chkTablesColumnOrder.Checked = SQLOption.Ignore.FilterColumnOrder;
+                chkIgnoreNotForReplication.Checked = SQLOption.Ignore.FilterNotForReplication;
 
-            IncludeSynonymsCheckBox.Checked = SQLOption.Ignore.FilterSynonyms;
+                chkCompTriggersDDL.Checked = SQLOption.Ignore.FilterDDLTriggers;
+                chkCompTriggers.Checked = SQLOption.Ignore.FilterTrigger;
+                chkCompUDT.Checked = SQLOption.Ignore.FilterUserDataType;
+                chkCompVistas.Checked = SQLOption.Ignore.FilterView;
+                chkCompXMLSchemas.Checked = SQLOption.Ignore.FilterXMLSchema;
+                chkFileGroups.Checked = SQLOption.Ignore.FilterTableFileGroup;
+                chkCompUsers.Checked = SQLOption.Ignore.FilterUsers;
+                chkCompRoles.Checked = SQLOption.Ignore.FilterRoles;
+                chkCompRules.Checked = SQLOption.Ignore.FilterRules;
 
-            if (SQLOption.Script.AlterObjectOnSchemaBinding)
-                optScriptSchemaBindingAlter.Checked = true;
+                IncludeSynonymsCheckBox.Checked = SQLOption.Ignore.FilterSynonyms;
+
+                if (SQLOption.Script.AlterObjectOnSchemaBinding)
+                    optScriptSchemaBindingAlter.Checked = true;
+                else
+                    optScriptSchemaDrop.Checked = true;
+
+                if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.Automatic)
+                    rdoCaseAutomatic.Checked = true;
+                if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.CaseInsensity)
+                    rdoCaseInsensitive.Checked = true;
+                if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.CaseSensity)
+                    rdoCaseSensitive.Checked = true;
+
+                if (SQLOption.Comparison.CaseSensityInCode == SqlOptionComparison.CaseSensityOptions.CaseInsensity)
+                    rdoCaseInsensityInCode.Checked = true;
+                if (SQLOption.Comparison.CaseSensityInCode == SqlOptionComparison.CaseSensityOptions.CaseSensity)
+                    rdoCaseSensityInCode.Checked = true;
+
+                chkIgnoreWhiteSpaceInCode.Checked = SQLOption.Comparison.IgnoreWhiteSpacesInCode;
+
+                chkReloadDB.Checked = SQLOption.Comparison.ReloadComparisonOnUpdate;
+            }
             else
-                optScriptSchemaDrop.Checked = true;
-
-            if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.Automatic)
-                rdoCaseAutomatic.Checked = true;
-            if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.CaseInsensity)
-                rdoCaseInsensitive.Checked = true;
-            if (SQLOption.Comparison.CaseSensityType == SqlOptionComparison.CaseSensityOptions.CaseSensity)
-                rdoCaseSensitive.Checked = true;
-
-            if (SQLOption.Comparison.CaseSensityInCode == SqlOptionComparison.CaseSensityOptions.CaseInsensity)
-                rdoCaseInsensityInCode.Checked = true;
-            if (SQLOption.Comparison.CaseSensityInCode == SqlOptionComparison.CaseSensityOptions.CaseSensity)
-                rdoCaseSensityInCode.Checked = true;
-
-            chkIgnoreWhiteSpaceInCode.Checked = SQLOption.Comparison.IgnoreWhiteSpacesInCode;
-
-            chkReloadDB.Checked = SQLOption.Comparison.ReloadComparisonOnUpdate;
+            {
+                using (StreamReader reader = new StreamReader(Path.Combine(userLocalAppDataDirectory, "searchoptions.xml")))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] split = line.Split('=');
+                        string prop = split[0];
+                        string[] split2 = split[1].Split(',');
+                        string type = split2[0];
+                        string value = split2[1].Trim().Split(':')[1].Trim();
+                        if (type == typeof(CheckBox).FullName)
+                        {
+                            var cb = (CheckBox)this.GetType().GetField(prop, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+                            cb.Checked = value == "1";
+                        }
+                        if (type == typeof(RadioButton).FullName)
+                        {
+                            var rb = (RadioButton)this.GetType().GetField(prop, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+                            rb.Checked = value == "True";
+                        }
+                        if (type == typeof(TextBox).FullName)
+                        {
+                            var tb = (TextBox)this.GetType().GetField(prop, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(this);
+                            tb.Text= value;
+                        }
+                    }
+                }
+            }
+            
 
             LoadFilters();
         }
@@ -187,6 +226,19 @@ namespace OpenDBDiff.SqlServer.Ui
 
             SQLOption.Comparison.IgnoreWhiteSpacesInCode = chkIgnoreWhiteSpaceInCode.Checked;
             SQLOption.Comparison.ReloadComparisonOnUpdate = chkReloadDB.Checked;
+
+            var userLocalAppDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), nameof(OpenDBDiff));
+            if (!Directory.Exists(userLocalAppDataDirectory)) Directory.CreateDirectory(userLocalAppDataDirectory);
+            using (StreamWriter writer = new StreamWriter(Path.Combine(userLocalAppDataDirectory, "searchoptions.xml")))
+            {
+                foreach(var field in this.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    if(field.FieldType == typeof(CheckBox)
+                        || field.FieldType == typeof(TextBox)
+                        || field.FieldType == typeof(RadioButton))
+                    writer.WriteLine(field.Name + "=" + field.GetValue(this));
+                }
+            }
 
             FireOptionChanged(SQLOption);
         }
